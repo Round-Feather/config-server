@@ -1,0 +1,7 @@
+server:
+  port: 8080
+
+repo:
+  url: "https://github.com/Round-Feather/paven-config-properties.git"
+  branch: "newinfra"
+  account: "mkliskaRF"

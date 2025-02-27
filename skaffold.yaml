@@ -1,0 +1,23 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: cloud-run-application
+profiles:
+  - name: dev
+    manifests:
+      rawYaml:
+        - dev-service.yaml
+  - name: qa
+    manifests:
+      rawYaml:
+        - qa-service.yaml
+  - name: staging
+    manifests:
+      rawYaml:
+        - staging-service.yaml
+  - name: prod
+    manifests:
+      rawYaml:
+        - production-service.yaml
+deploy:
+  cloudrun: {}

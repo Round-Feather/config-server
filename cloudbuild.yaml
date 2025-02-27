@@ -1,0 +1,27 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build Container Image'
+    script: |
+      docker build \
+      -t us-central1-docker.pkg.dev/$PROJECT_ID/images/config-server:latest \
+      .
+    automapSubstitutions: true
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push Container Image'
+    script: |
+      docker push \
+      us-central1-docker.pkg.dev/$PROJECT_ID/images/config-server:latest
+    automapSubstitutions: true
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Generate SBOM'
+    script: |
+      gcloud artifacts sbom export --uri "us-central1-docker.pkg.dev/$PROJECT_ID/images/config-server:latest"
+    automapSubstitutions: true
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Trigger Deploy'
+    script: |
+      gcloud deploy releases create v1-0-0 --delivery-pipeline config-server --region us-central1 \
+      --images app=us-central1-docker.pkg.dev/$PROJECT_ID/images/config-server:latest
+    automapSubstitutions: true
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/images/config-server:latest'

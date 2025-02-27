@@ -1,0 +1,47 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: config-server
+description: application deployment pipeline
+serialPipeline:
+  stages:
+    - targetId: cs-dev
+      profiles: [dev]
+    - targetId: cs-qa
+      profiles: [qa]
+    - targetId: cs-staging
+      profiles: [staging]
+    - targetId: cs-prod
+      profiles: [prod]
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: cs-dev
+description: Cloud Run development service
+run:
+  location: projects/paven-common-v3/locations/us-west2
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: cs-qa
+description: Cloud Run development service
+run:
+  location: projects/paven-common-v3/locations/us-west2
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: cs-staging
+description: Cloud Run development service
+run:
+  location: projects/paven-common-v3/locations/us-west2
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: cs-prod
+description: Cloud Run development service
+run:
+  location: projects/paven-common-v3/locations/us-west2

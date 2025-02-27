@@ -1,0 +1,52 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: config-server-prod
+  namespace: "1061899691727"
+  labels:
+    cloud.googleapis.com/location: us-west2
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: 1
+        autoscaling.knative.dev/maxScale: 2
+        run.googleapis.com/vpc-access-connector: projects/paven-common-v3/locations/us-west2/connectors/paven-dev-connector
+    spec:
+      containerConcurrency: 200
+      timeoutSeconds: 300
+      containers:
+      - name: config-service
+        image: app
+        ports:
+        - name: http1
+          containerPort: 8080
+        env:
+        - name: APP_PROFILE
+          value: prod
+        - name: REPO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: github-access-token
+        - name: REPO_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: github-user-name
+        resources:
+          limits:
+            cpu: '1.0'
+            memory: 1024Mi
+        startupProbe:
+          timeoutSeconds: 240
+          periodSeconds: 240
+          failureThreshold: 1
+          httpGet:
+            path: '/healthcheck/ready'
+            port: 8080
+#      - name: otel-connector
+#        image: otel/opentelemetry-collector-contrib:latest
+#        ports:
+#        - name: otel-http
+#          port: 4318
